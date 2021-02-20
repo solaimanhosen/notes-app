@@ -1,0 +1,2 @@
+This message is written by Node JS
+this is the appended text
