@@ -30,5 +30,18 @@ module.exports = {
         } else {
             console.log('title already exists')
         }
+    },
+    removeNote: function (title) {
+        let notes = getNotes()
+        let filteredNotes = notes.filter(function (note) {
+            return note.title !== title;
+        })
+
+        if (filteredNotes.length < notes.length) {
+            fs.writeFileSync('notes.json', JSON.stringify(filteredNotes))
+            console.log('title: ' + title + '\n' + 'this note is remvoed')
+        } else {
+            console.log('title not found')
+        }
     }
 };
