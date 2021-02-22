@@ -3,24 +3,11 @@ console.log('notes.js');
 
 const fs = require('fs')
 
-const getNotes = function () {
-    try {
-        let dataBuffer = fs.readFileSync('notes.json')
-        let dataJSON = dataBuffer.toString();
-        let data = JSON.parse(dataJSON)
-        return data;
-    } catch(e) {
-        return []
-    }
-}
-
 module.exports = {
-    addNote: function (title, description) {
-        let notes = getNotes();
-        const duplicates = notes.filter(function(note) {
-            return note.title === title
-        })
-        if (duplicates.length === 0) {
+    addNote(title, description) {
+        let notes = this.getNotes();
+        const duplicateNote = notes.find((note) => note.title === title)
+        if (duplicateNote === undefined) {
             notes.push({
                 title: title, 
                 description: description
@@ -31,17 +18,36 @@ module.exports = {
             console.log('title already exists')
         }
     },
-    removeNote: function (title) {
-        let notes = getNotes()
-        let filteredNotes = notes.filter(function (note) {
-            return note.title !== title;
-        })
+    removeNote(title) {
+        let notes = this.getNotes()
+        let filteredNotes = notes.filter((note) => note.title !== title)
 
         if (filteredNotes.length < notes.length) {
             fs.writeFileSync('notes.json', JSON.stringify(filteredNotes))
             console.log('title: ' + title + '\n' + 'this note is remvoed')
         } else {
             console.log('title not found')
+        }
+    },
+    getNotes() {
+        try {
+            let dataBuffer = fs.readFileSync('notes.json')
+            let dataJSON = dataBuffer.toString();
+            let data = JSON.parse(dataJSON)
+            return data;
+        } catch(e) {
+            return []
+        }
+    },
+    readNote(title) {
+        let notes = this.getNotes();
+        let matchNote = notes.find((note) => note.title === title)
+
+        if (matchNote !== undefined) {
+            console.log('Title: ' + matchNote.title);
+            console.log('Description: ' + matchNote.description)
+        } else {
+            console.log('no match found')
         }
     }
 };
